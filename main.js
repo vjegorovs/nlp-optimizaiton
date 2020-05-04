@@ -1,19 +1,7 @@
-let Fraction = algebra.Fraction;
-let Expression = algebra.Expression;
-let Equation = algebra.Equation;
+// let Fraction = algebra.Fraction;
+// let Expression = algebra.Expression;
+// let Equation = algebra.Equation;
 const globalSettings = { xStart: null, yStart: null, eps: null, t: null };
-
-// let expr = new Expression("x");
-// expr = expr.multiply("x").subtract(3).add("x*y");
-
-// console.log(expr.toString());
-
-// console.log(math.derivative(expr.toString(), "x").toString());
-
-// let expr2 = new Expression("1").subtract("x");
-// let expr3 = new Expression("1").add("t");
-// expr2 = expr2.multiply(expr3);
-// console.log(expr2.toString());
 
 function run() {
   // getting all input settings from user
@@ -24,7 +12,8 @@ function run() {
 
   console.log(startExpression);
   const deltaFx = calculateDeltaFx(startExpression);
-  calculateTCoords(deltaFx);
+  const newCoords = calculateTCoords(deltaFx);
+  const tExpression = calculateTStar(newCoords, startExpression);
 }
 
 // function to display analyzed expression
@@ -46,7 +35,7 @@ function expressionBuilder(inputArgs) {
 }
 
 function finalExpressionBuilder(inputs) {
-  //I thought abough converting to floats/ints here, but I guess I will carry on all the way with Strings, since math.js / algebra.js work with Strings for derivatives etc
+  //I thought abough converting to floats/ints here, but I guess I will carry on all the way with Strings, since math.js work with Strings for derivatives etc
   let finalExpressionConcatenated = `x - ${inputs[0]}*y + ${inputs[1]}*x^2 + ${inputs[2]}*x*y + ${inputs[3]}*y^2`;
   globalSettings.xStart = inputs[4] ? inputs[4] : 0;
   globalSettings.yStart = inputs[5] ? inputs[5] : 0;
@@ -80,20 +69,70 @@ function calculateDeltaFx(inputExpression) {
 
 function calculateTCoords(deltaFx) {
   console.log("deltaFx = ", deltaFx);
-  const globalX = new Expression(globalSettings.xStart);
-  const globalY = new Expression(globalSettings.yStart);
+  const globalX = globalSettings.xStart.toString();
+  const globalY = globalSettings.yStart.toString();
+  console.log(deltaFx[1].toString());
+  console.log(`${globalY} + ${deltaFx[1].toString()} * t`);
 
-  // here not ===, but just ==, due to me passing in ints. Something something math.js is wonky when negative signs in strings, thus it was just quicker for me potential #TODO
+  // here not ===, but just ==, due to me passing in ints. Something something math.js is wonky when negative signs in strings, thus it was just quicker for me. Potential #TODO
+  // added a second ternary to eliminate returns in fomr of "0 + 5t", checking for the first zero and ommiting it if its there
+  // const firstTvalue =
+  //   deltaFx[0].toString() === "0"
+  //     ? globalX
+  //     : globalX === "0"
+  //     ? new Expression("t").multiply(deltaFx[0].toString()).toString()
+  //     : globalX
+  //         .add(new Expression("t").multiply(deltaFx[0].toString()))
+  //         .toString();
+  // const secondTvalue =
+  //   deltaFx[1].toString() === "0"
+  //     ? globalY
+  //     : globalY === "0"
+  //     ? new Expression("t").multiply(new Expression(deltaFx[1])).toString()
+  //     : globalY.add(
+  //         new Expression("t").multiply(new Expression(deltaFx[1])).toString()
+  //       );
+
   const firstTvalue =
-    deltaFx[0] == "0"
+    deltaFx[0].toString() === "0"
       ? globalX
-      : globalX.add(new Expression("t").multiply(deltaFx[0])).toString();
+      : globalX === "0"
+      ? `${deltaFx[0].toString()} * t`
+      : `${globalX} + ${deltaFx[0].toString()} * t`;
   const secondTvalue =
-    deltaFx[1] == "0"
+    deltaFx[1].toString() === "0"
       ? globalY
-      : globalY.add(new Expression("t").multiply(deltaFx[1])).toString();
+      : globalY === "0"
+      ? `${deltaFx[1].toString()} * t`
+      : `${globalY} + ${deltaFx[1].toString()} * t`;
   console.log(firstTvalue.toString());
   console.log(secondTvalue.toString());
+
+  return [firstTvalue, secondTvalue];
+}
+
+function calculateTStar(coords, expression) {
+  console.log("Start expr = ", expression);
+  console.log(`Coords = (${coords[0]},${coords[1]})`);
+  //console.log(new Expression(expression).toString());
+
+  const lol = "(" + coords[1].toString() + ")";
+  const result = math.simplify(expression, {
+    x: math.parse(coords[0].toString()),
+    y: math.parse(coords[1].toString()),
+  });
+
+  console.log("result = ", result.toString());
+  // console.log("exptest = ", algebra.parse(result.toString().toString()));
+  // console.log("deriv = ", math.derivative(result, "t").toString());
+  // console.log(
+  //   new Equation(algebra.parse(math.derivative(result, "t").toString()), 0)
+  //     .solveFor("t")
+  //     .toString()
+  // );
+  // return new Equation(algebra.parse(math.derivative(result, "t").toString()), 0)
+  //   .solveFor("t")
+  //   .toString();
 }
 
 function intiializeApp() {
@@ -108,4 +147,4 @@ console.log("----------------------");
 console.log("----------------------");
 console.log("----------------------");
 
-//console.log(new Expression("t"))
+// const eq = "2 * (1 - t) - t + -(2 * (1 - t) ^ 2)";
