@@ -89,8 +89,9 @@ function finalExpressionBuilder(inputs) {
   globalSettings.t = inputs[8] ? inputs[8] : "0";
   console.log(globalSettings);
 
-  return finalExpressionConcatenated;
-  //return "2*x*y + 2* y - x^2 - 2*y^2";
+  // #TODO work in custom input from inputs[0] here!!
+  //return finalExpressionConcatenated;
+  return "2*x*y + 2* y - x^2 - 2*y^2";
 }
 
 function loopCheck(inputExpression, deltaFx) {

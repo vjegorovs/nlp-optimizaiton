@@ -3,44 +3,34 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>NLP optimization</title>
     <script src="res/nerdamer.core.js" defer></script>
     <script src="res/Algebra.js" defer></script>
     <script src="res/Calculus.js" defer></script>
     <script src="res/Solve.js" defer></script>
     <script src="main.js" defer></script>
-    <link rel="stylesheet" type="text/css" href="styles.css" />
+    <link rel="stylesheet" type="text/css" href="styles2.css" />
   </head>
   <body>
-    <div class="wrapper">
-      <div class="column1">
-        <div class="banner">
-          <h1>NLP optimization hw</h1>
-        </div>
-        <div class="settings">
-          <ul>
-            <li><span>input your own here</span> <input type="text" /></li>
-            <li><span>a</span> <input type="text" /></li>
-            <li><span>b</span> <input type="text" /></li>
-            <li><span>c</span> <input type="text" /></li>
-            <li><span>d</span> <input type="text" /></li>
-            <li><span>x1</span> <input type="text" /></li>
-            <li><span>x2</span> <input type="text" /></li>
-            <li><span>ε</span> <input type="text" /></li>
-            <li><span>t</span> <input type="text" /></li>
-          </ul>
-          <div class="run-btn">
-            <input type="submit" value="submit" class="submitBtn" />
-          </div>
-        </div>
+    <div class="grid-container">
+      <div class="title"><h1>NLP optimization</h1></div>
+      <div class="main-wrap"></div>
+      <div class="settings">
+        <ul>
+          <li><span>input your own here</span> <input type="text" /></li>
+          <li><label>a</label> <input type="text" /></li>
+          <li><label>b</label> <input type="text" /></li>
+          <li><label>c</label> <input type="text" /></li>
+          <li><label>d</label> <input type="text" /></li>
+          <li><label>x1</label> <input type="text" /></li>
+          <li><label>x2</label> <input type="text" /></li>
+          <li><label>ε</label> <input type="text" /></li>
+          <li><label>t</label> <input type="text" /></li>
+        </ul>
+        <input type="submit" value="submit" class="submitBtn" />
       </div>
-      <div class="column2">
-        <div class="expression"></div>
-        <div class="results">
-          <div class="finalResult"></div>
-          <div class="resultsTable"></div>
-        </div>
-      </div>
+      <div class="expression"></div>
+      <div class="iteration-table"><div class="test"></div></div>
     </div>
   </body>
 </html>

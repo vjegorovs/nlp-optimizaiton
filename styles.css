@@ -10,52 +10,69 @@ body {
   padding: 0;
 }
 
-.wrapper {
-  display: flex;
-  flex-direction: row;
+.grid-container {
+  display: grid;
+  width: 100%;
+  height: 100vh;
+  grid-template-columns: minmax(10px, 0.25fr) repeat(5, minmax(50px, 1fr)) minmax(
+      10px,
+      0.25fr
+    );
+  grid-template-rows:
+    minmax(10px, 0.05fr) minmax(50px, 0.45fr) minmax(50px, 0.8fr) repeat(
+      2,
+      minmax(40px, 2.25fr)
+    )
+    minmax(15px, 0.2fr);
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
 }
 
-h1,
-h2,
-h3 {
-  font-weight: 300;
-  text-transform: uppercase;
+.title {
+  grid-area: 2 / 2 / 3 / 4;
+  margin-left: 8%;
 }
 
-h1 {
-  font-size: 2em;
-}
-
-.column1,
-.column2 {
-  display: flex;
-  flex-direction: column;
-}
-
-.column1 {
-  background-color: green;
-  width: 20%;
-}
-
-.banner {
-  display: flex;
-  height: 15vh;
-  align-items: center;
-}
-
-span {
-  display: inline-block;
-  text-align: center;
-  width: 15%;
-}
-
-.run-btn {
-  padding: 0 0 5% 20%;
+.main-wrap {
+  grid-area: 3 / 2 / 6 / 7;
+  /* border: solid rgb(131, 131, 131); */
+  border-radius: 5rem;
+  border-width: 5px;
 }
 
 .settings {
-  padding-left: 5%;
-  padding-bottom: 5%;
+  grid-area: 3 / 2 / 6 / 3;
+  width: 90%;
+  height: 80%;
+  border: 2px solid rgb(114, 133, 114);
+  border-radius: 50px;
+  margin: 15% 0 20% 10%;
+}
+.expression {
+  grid-area: 3 / 3 / 4 / 7;
+  width: auto;
+  height: auto;
+  border: 2px solid rgb(114, 133, 114);
+  border-radius: 15px;
+  /* border: solid green; */
+  margin: 3.7% 5% 0 3%;
+}
+
+.iteration-table {
+  grid-area: 4 / 3 / 6 / 7;
+  width: auto;
+  height: 550px;
+  /* border: solid green; */
+  margin: 0.5% 5% 8% 3%;
+}
+
+.grid {
+  display: grid;
+}
+
+.inner-row {
+  background-color: black;
+  width: 100px;
 }
 
 .input {
@@ -69,4 +86,22 @@ ul {
 
 li {
   padding-top: 0.7em;
+}
+
+label {
+  display: inline;
+}
+
+.submitBtn {
+  outline: none;
+  display: inline-block;
+  border: 1px solid #dddddd;
+  color: white;
+  background-color: rgb(47, 47, 255);
+  margin-left: 40%;
+}
+
+.submitBtn:hover {
+  color: rgb(0, 0, 255);
+  text-decoration: none;
 }
