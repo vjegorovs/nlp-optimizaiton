@@ -1,19 +1,66 @@
-// let Fraction = algebra.Fraction;
-// let Expression = algebra.Expression;
-// let Equation = algebra.Equation;
 const globalSettings = { xStart: null, yStart: null, eps: null, t: null };
 
 function run() {
   // getting all input settings from user
-  let inputArray = [...document.querySelectorAll("input")].map((x) => x.value);
-  inputArray = inputArray.slice(0, -1);
+  let inputArray = [...document.querySelectorAll("input")]
+    .map((x) => x.value)
+    .slice(0, -1);
+
   console.log(inputArray);
   const startExpression = expressionBuilder(inputArray);
 
-  console.log(startExpression);
-  const deltaFx = calculateDeltaFx(startExpression);
-  const newCoords = calculateTCoords(deltaFx);
-  const tExpression = calculateTStar(newCoords, startExpression);
+  console.log("Start expression =", startExpression);
+
+  let flag = true;
+
+  let finalResult;
+  let iterations = 0;
+  while (flag && iterations < 25) {
+    const deltaFx = calculateDeltaFx(startExpression);
+    console.log(
+      "The deltaFx coords are = (",
+      deltaFx[0].toString(),
+      ",",
+      deltaFx[1].toString(),
+      ")"
+    );
+    const newCoords = calculateTCoords(deltaFx);
+
+    const tStar = calculateTStar(newCoords, startExpression);
+
+    const nextIterationCoordinates = calculateNewCoordinates(tStar, deltaFx);
+
+    flag = ([] = loopCheck(startExpression, deltaFx)).includes(false);
+    // console.log(`          DeltaFx = (${deltaFx[0].toString()},${deltaFx[1].toString()})
+    //       newCoords =(${newCoords[0].toString()},${newCoords[1].toString()})
+    //       tStar = ${tStar}
+    //       nextIterCoordinates = (${nextIterationCoordinates[0]},${
+    //   nextIterationCoordinates[1]
+    // })`);
+    // finalResult = `    DeltaFx = (${deltaFx[0].toString()},${deltaFx[1].toString()})
+    // newCoords =(${newCoords[0].toString()},${newCoords[1].toString()})
+    // tStar = ${tStar}
+    // nextIterCoordinates = (${nextIterationCoordinates[0]},${
+    //   nextIterationCoordinates[1]
+    // })`;
+    // console.log("------------------------");
+    console.log("function value! = ", functionResult(startExpression).text());
+    [globalSettings.xStart, globalSettings.yStart] = nextIterationCoordinates;
+    // console.log(globalSettings);
+    // console.log("------------------------");
+    console.log("Iterations performed: ", iterations + 1);
+    console.log("one more iteration? ", flag);
+    iterations++;
+  }
+  console.log("-------------------END-----------------");
+  //console.log(finalResult);
+}
+
+function functionResult(expr) {
+  return nerdamer(nerdamer(expr).toString(), {
+    x: globalSettings.xStart,
+    y: globalSettings.yStart,
+  });
 }
 
 // function to display analyzed expression
@@ -23,7 +70,7 @@ function expressionBuilder(inputArgs) {
     ? `${finalExpressionBuilder(inputArgs)}`
     : baseExpression;
   const finalExpressionEnd = "f(x, y) = " + finalExpression;
-  console.log(finalExpressionEnd);
+  //console.log(finalExpressionEnd);
   const expressionOutput = document.querySelector(".expression");
 
   // removes previous expr
@@ -35,104 +82,126 @@ function expressionBuilder(inputArgs) {
 }
 
 function finalExpressionBuilder(inputs) {
-  //I thought abough converting to floats/ints here, but I guess I will carry on all the way with Strings, since math.js work with Strings for derivatives etc
-  let finalExpressionConcatenated = `x - ${inputs[0]}*y + ${inputs[1]}*x^2 + ${inputs[2]}*x*y + ${inputs[3]}*y^2`;
-  globalSettings.xStart = inputs[4] ? inputs[4] : 0;
-  globalSettings.yStart = inputs[5] ? inputs[5] : 0;
-  globalSettings.eps = inputs[6] ? inputs[6] : 0.5;
-  globalSettings.t = inputs[7] ? inputs[7] : 0;
+  let finalExpressionConcatenated = `x - ${inputs[1]}*y + ${inputs[2]}*x^2 + ${inputs[3]}*x*y + ${inputs[4]}*y^2`;
+  globalSettings.xStart = inputs[5] ? nerdamer(inputs[5]).text() : "0";
+  globalSettings.yStart = inputs[6] ? nerdamer(inputs[6]).text() : "0";
+  globalSettings.eps = inputs[7] ? inputs[7] : "0.5";
+  globalSettings.t = inputs[8] ? inputs[8] : "0";
   console.log(globalSettings);
-  //return finalExpressionConcatenated;
-  return "2*x*y + y - x^2 - 2*y^2";
+
+  return finalExpressionConcatenated;
+  //return "2*x*y + 2* y - x^2 - 2*y^2";
 }
 
-function calculateDeltaFx(inputExpression) {
-  const firstDerivative = math.derivative(inputExpression, "x").toString();
-  const secondDerivative = math.derivative(inputExpression, "y").toString();
+function loopCheck(inputExpression, deltaFx) {
+  const firstDerivative = nerdamer(`diff(${inputExpression}, x)`).toString();
+  const secondDerivative = nerdamer(`diff(${inputExpression}, y)`).toString();
 
-  // potentially return derivative as well, or display them here in dom already, even before calculations start
-  console.log("first derivative= ", firstDerivative);
-  console.log("second derivative= ", secondDerivative);
-
-  const deltaFx = [
-    math.evaluate(firstDerivative, {
+  const loopLeftSides = [
+    nerdamer(nerdamer(firstDerivative).toString(), {
       x: globalSettings.xStart,
       y: globalSettings.yStart,
     }),
-    math.evaluate(secondDerivative, {
+    nerdamer(nerdamer(secondDerivative).toString(), {
       x: globalSettings.xStart,
       y: globalSettings.yStart,
     }),
   ];
+  // console.log(
+  //   "loopcheck value 1= ",
+  //   loopLeftSides[0].text(),
+  //   "loopcheck value 2= ",
+  //   loopLeftSides[1].text()
+  // );
+  const lol = loopLeftSides.map((x) =>
+    nerdamer(`${x.toString()}`).lte(`${globalSettings.eps}`)
+  );
+  console.log(lol);
+  return lol;
+}
+
+function calculateDeltaFx(inputExpression) {
+  const firstDerivative = nerdamer(`diff(${inputExpression}, x)`).toString();
+  const secondDerivative = nerdamer(`diff(${inputExpression}, y)`).toString();
+  //console.log("first derivative by x =", firstDerivative);
+  //console.log("first derivative by y =", secondDerivative);
+
+  const deltaFx = [
+    nerdamer(nerdamer(firstDerivative).toString(), {
+      x: globalSettings.xStart,
+      y: globalSettings.yStart,
+    }),
+    nerdamer(nerdamer(secondDerivative).toString(), {
+      x: globalSettings.xStart,
+      y: globalSettings.yStart,
+    }),
+  ];
+
   return deltaFx;
 }
 
 function calculateTCoords(deltaFx) {
-  console.log("deltaFx = ", deltaFx);
+  //console.log("deltaFx = ", deltaFx);
   const globalX = globalSettings.xStart.toString();
   const globalY = globalSettings.yStart.toString();
-  console.log(deltaFx[1].toString());
-  console.log(`${globalY} + ${deltaFx[1].toString()} * t`);
 
-  // here not ===, but just ==, due to me passing in ints. Something something math.js is wonky when negative signs in strings, thus it was just quicker for me. Potential #TODO
-  // added a second ternary to eliminate returns in fomr of "0 + 5t", checking for the first zero and ommiting it if its there
-  // const firstTvalue =
-  //   deltaFx[0].toString() === "0"
-  //     ? globalX
-  //     : globalX === "0"
-  //     ? new Expression("t").multiply(deltaFx[0].toString()).toString()
-  //     : globalX
-  //         .add(new Expression("t").multiply(deltaFx[0].toString()))
-  //         .toString();
-  // const secondTvalue =
-  //   deltaFx[1].toString() === "0"
-  //     ? globalY
-  //     : globalY === "0"
-  //     ? new Expression("t").multiply(new Expression(deltaFx[1])).toString()
-  //     : globalY.add(
-  //         new Expression("t").multiply(new Expression(deltaFx[1])).toString()
-  //       );
-
-  const firstTvalue =
+  const firstTvalue = nerdamer(
     deltaFx[0].toString() === "0"
-      ? globalX
+      ? globalX.toString()
       : globalX === "0"
       ? `${deltaFx[0].toString()} * t`
-      : `${globalX} + ${deltaFx[0].toString()} * t`;
-  const secondTvalue =
+      : `${globalX} + ${deltaFx[0].toString()} * t`
+  );
+  const secondTvalue = nerdamer(
     deltaFx[1].toString() === "0"
-      ? globalY
+      ? globalY.toString()
       : globalY === "0"
       ? `${deltaFx[1].toString()} * t`
-      : `${globalY} + ${deltaFx[1].toString()} * t`;
-  console.log(firstTvalue.toString());
-  console.log(secondTvalue.toString());
+      : `${globalY} + ${deltaFx[1].toString()} * t`
+  );
+
+  //console.log("first coord", firstTvalue.toString());
+  //console.log("second coord", secondTvalue.toString());
 
   return [firstTvalue, secondTvalue];
 }
 
 function calculateTStar(coords, expression) {
-  console.log("Start expr = ", expression);
-  console.log(`Coords = (${coords[0]},${coords[1]})`);
-  //console.log(new Expression(expression).toString());
+  //console.log("start expression = ", nerdamer(expression).toString());
+  //console.log(`Coords = (${coords[0]},${coords[1]})`);
 
-  const lol = "(" + coords[1].toString() + ")";
-  const result = math.simplify(expression, {
-    x: math.parse(coords[0].toString()),
-    y: math.parse(coords[1].toString()),
+  const simplifiedExpression = nerdamer(nerdamer(expression).toString(), {
+    x: coords[0].toString(),
+    y: coords[1].toString(),
   });
 
-  console.log("result = ", result.toString());
-  // console.log("exptest = ", algebra.parse(result.toString().toString()));
-  // console.log("deriv = ", math.derivative(result, "t").toString());
-  // console.log(
-  //   new Equation(algebra.parse(math.derivative(result, "t").toString()), 0)
-  //     .solveFor("t")
-  //     .toString()
-  // );
-  // return new Equation(algebra.parse(math.derivative(result, "t").toString()), 0)
-  //   .solveFor("t")
-  //   .toString();
+  //console.log("Expression with t^2 = ", simplifiedExpression.toString());
+
+  const firstDerivative = nerdamer(
+    `diff(${simplifiedExpression}, t)`
+  ).toString();
+
+  //console.log("derivative from t = ", firstDerivative.toString());
+  const finalTstar = nerdamer.solveEquations(firstDerivative.toString(), "t");
+
+  //console.log("t* =", finalTstar.toString());
+  return finalTstar.toString();
+}
+
+function calculateNewCoordinates(tStar, deltaFx) {
+  const globalX = globalSettings.xStart;
+  const globalY = globalSettings.yStart;
+
+  const firstNewCoordinate = nerdamer(
+    `${globalX} + ${tStar} * ${deltaFx[0].toString()}`
+  );
+  const secondNewCoordinate = nerdamer(
+    `${globalY} + ${tStar} * ${deltaFx[1].toString()}`
+  );
+  //console.log("new X coordinate = ", firstNewCoordinate.toString());
+  //console.log("new Y coordinate = ", secondNewCoordinate.toString());
+
+  return [firstNewCoordinate.toString(), secondNewCoordinate.toString()];
 }
 
 function intiializeApp() {
@@ -146,5 +215,7 @@ console.log("----------------------");
 console.log("----------------------");
 console.log("----------------------");
 console.log("----------------------");
+// globalSettings.xStart = "-5";
+// globalSettings.yStart = "-5";
 
-// const eq = "2 * (1 - t) - t + -(2 * (1 - t) ^ 2)";
+// console.log(functionResult("x-2*y+10*x^2+-4*x*y+10*y^2").text());
