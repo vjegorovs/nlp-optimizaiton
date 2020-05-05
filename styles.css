@@ -3,7 +3,7 @@ body {
   color: #000000;
   font-family: "Lato", "Arial", sans-serif;
   font-weight: 300;
-  font-size: 20px;
+  font-size: 130%;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
   margin: 0;
@@ -61,7 +61,7 @@ body {
 .iteration-table {
   grid-area: 4 / 3 / 6 / 7;
   width: auto;
-  height: 550px;
+  height: auto;
   /* border: solid green; */
   margin: 0.5% 5% 8% 3%;
 }
@@ -70,14 +70,10 @@ body {
   display: grid;
 }
 
-.inner-row {
-  background-color: black;
-  width: 100px;
-}
-
-.input {
-  width: 150px;
+input {
+  width: 40%;
   height: 30px;
+  margin-left: 5%;
 }
 
 ul {
@@ -86,22 +82,51 @@ ul {
 
 li {
   padding-top: 0.7em;
+  margin-left: -5%;
+  width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: 100%;
 }
 
 label {
-  display: inline;
+  display: inline-block;
+  box-sizing: border-box;
+  width: 35%;
+}
+
+li:first-child label {
+  display: block;
+  /* background-color: blueviolet; */
+  width: 100%;
+  margin-left: -5%;
+}
+
+li:first-child input {
+  width: 100%;
+  margin: 5% 5% 5% -5%;
 }
 
 .submitBtn {
   outline: none;
   display: inline-block;
   border: 1px solid #dddddd;
+  border-radius: 6px;
+  width: 50%;
+  height: 10%;
   color: white;
-  background-color: rgb(47, 47, 255);
-  margin-left: 40%;
+  font-size: 100%;
+  background-color: rgb(87, 87, 211);
+  margin-left: 25%;
 }
 
 .submitBtn:hover {
-  color: rgb(0, 0, 255);
+  background-color: rgb(0, 0, 255);
   text-decoration: none;
+  transition-duration: 0.5s;
 }
