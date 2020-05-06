@@ -15,7 +15,7 @@ function run() {
 
   let finalResult;
   let iterations = 0;
-  while (flag && iterations < 25) {
+  while (flag && iterations < 5) {
     const deltaFx = calculateDeltaFx(startExpression);
     console.log(
       "The deltaFx coords are = (",
@@ -31,20 +31,19 @@ function run() {
     const nextIterationCoordinates = calculateNewCoordinates(tStar, deltaFx);
 
     flag = ([] = loopCheck(startExpression, deltaFx)).includes(false);
-    // console.log(`          DeltaFx = (${deltaFx[0].toString()},${deltaFx[1].toString()})
-    //       newCoords =(${newCoords[0].toString()},${newCoords[1].toString()})
-    //       tStar = ${tStar}
-    //       nextIterCoordinates = (${nextIterationCoordinates[0]},${
-    //   nextIterationCoordinates[1]
-    // })`);
-    // finalResult = `    DeltaFx = (${deltaFx[0].toString()},${deltaFx[1].toString()})
-    // newCoords =(${newCoords[0].toString()},${newCoords[1].toString()})
-    // tStar = ${tStar}
-    // nextIterCoordinates = (${nextIterationCoordinates[0]},${
-    //   nextIterationCoordinates[1]
-    // })`;
-    // console.log("------------------------");
+
     console.log("function value! = ", functionResult(startExpression).text());
+    const frontendObject = {
+      iteration: iterations,
+      startcoordinates: `(${globalSettings.xStart},${globalSettings.yStart})`,
+      deltaFx: `(${deltaFx[0].toString()},${deltaFx[1].toString()})`,
+      tCoordinates: `(${newCoords[0].toString()},${newCoords[1].toString()})`,
+      tStar: `${tStar}`,
+      newCoordinates: `(${nextIterationCoordinates[0]},${nextIterationCoordinates[1]})`,
+      functionValue: `${functionResult(startExpression).text()}`,
+    };
+    console.log(frontendObject);
+    createDOMTableRow(frontendObject);
     [globalSettings.xStart, globalSettings.yStart] = nextIterationCoordinates;
     // console.log(globalSettings);
     // console.log("------------------------");
@@ -124,8 +123,6 @@ function loopCheck(inputExpression, deltaFx) {
 function calculateDeltaFx(inputExpression) {
   const firstDerivative = nerdamer(`diff(${inputExpression}, x)`).toString();
   const secondDerivative = nerdamer(`diff(${inputExpression}, y)`).toString();
-  //console.log("first derivative by x =", firstDerivative);
-  //console.log("first derivative by y =", secondDerivative);
 
   const deltaFx = [
     nerdamer(nerdamer(firstDerivative).toString(), {
@@ -203,6 +200,22 @@ function calculateNewCoordinates(tStar, deltaFx) {
   //console.log("new Y coordinate = ", secondNewCoordinate.toString());
 
   return [firstNewCoordinate.toString(), secondNewCoordinate.toString()];
+}
+
+function createDOMTableRow(obj) {
+  const newElement = document.createElement("li");
+  newElement.className = "table-row";
+  newElement.innerHTML = `
+  <div class="iteration-number"><p>${obj.iteration}</p></div>
+  <div class="start-coordinates"><p>${obj.startcoordinates}</p></div>
+  <div class="deltaFx"><p>${obj.deltaFx}</p></div> 
+  <div class="t-coordinates"><p>${obj.tCoordinates}</p></div>
+  <div class="t-star"><p>${obj.tStar}</p></div>
+  <div class="function-value"><p class="function-value-bold>${obj.functionValue}</p></div>
+  <div class="new-coordinates"><p>${obj.newCoordinates}</p></div>
+  `;
+  const tableRoot = document.querySelector(".table-rows");
+  tableRoot.append(newElement);
 }
 
 function intiializeApp() {

@@ -17,20 +17,41 @@
       <div class="main-wrap"></div>
       <div class="settings">
         <ul>
-          <li><label>Custom function:</label><input type="text" /></li>
-          <li><label>a</label> <input type="text" /></li>
-          <li><label>b</label> <input type="text" /></li>
-          <li><label>c</label> <input type="text" /></li>
-          <li><label>d</label> <input type="text" /></li>
-          <li><label>x1</label> <input type="text" /></li>
-          <li><label>x2</label> <input type="text" /></li>
-          <li><label>ε</label> <input type="text" /></li>
-          <li><label>t</label> <input type="text" /></li>
+          <li>
+            <label>Custom function:</label
+            ><input type="text" placeholder="x − ay + bx^2 + cxy + dy^2" />
+          </li>
+          <li><label>a</label> <input type="text" placeholder="2" /></li>
+          <li><label>b</label> <input type="text" placeholder="10" /></li>
+          <li><label>c</label> <input type="text" placeholder="-4" /></li>
+          <li><label>d</label> <input type="text" placeholder="10" /></li>
+          <li><label>x</label> <input type="text" placeholder="1" /></li>
+          <li><label>y</label> <input type="text" placeholder="1" /></li>
+          <li><label>ε</label> <input type="text" placeholder="0.25" /></li>
+          <li><label>t</label> <input type="text" placeholder="t*" /></li>
         </ul>
         <input type="submit" value="Try me!" class="submitBtn" />
       </div>
       <div class="expression"></div>
-      <div class="iteration-table"><div class="test"></div></div>
+      <div class="iteration-table">
+        <div class="table-header">
+          <div class="iteration-number">
+            <h3>Iteration</h3>
+          </div>
+          <div class="start-coordinates">
+            <h3>Start Coordinates</h3>
+          </div>
+          <div class="deltaFx"><h3>Delta Fx'</h3></div>
+          <div class="t-coordinates">
+            <h3>t Coordinates</h3>
+          </div>
+          <div class="t-star">
+            <h3>t*</h3>
+          </div>
+          <div class="function-value"><h3>Function value</h3></div>
+        </div>
+        <ul class="table-rows"></ul>
+      </div>
     </div>
   </body>
 </html>
