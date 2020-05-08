@@ -2,9 +2,13 @@ const globalSettings = { xStart: null, yStart: null, eps: null, t: null };
 
 function run() {
   // getting all input settings from user
+  // second map to check for empty fields, if yes then just replacing with 0
   let inputArray = [...document.querySelectorAll("input")]
     .map((x) => x.value)
-    .slice(0, -1);
+    .slice(0, -1)
+    .map((x) => (x === "" ? "1" : x));
+
+  // in case any default 0's inserted perhaps a popup to inform user?
 
   console.log(inputArray);
   const startExpression = expressionBuilder(inputArray);
@@ -14,8 +18,9 @@ function run() {
   let flag = true;
 
   let finalResult;
-  let iterations = 0;
-  while (flag && iterations < 10) {
+  let iterations = 1;
+  let frontendObject = {};
+  while (flag && iterations <= 10) {
     const deltaFx = calculateDeltaFx(startExpression);
     console.log(
       "The deltaFx coords are = (",
@@ -33,7 +38,7 @@ function run() {
     flag = ([] = loopCheck(startExpression, deltaFx)).includes(false);
 
     console.log("function value! = ", functionResult(startExpression).text());
-    const frontendObject = {
+    frontendObject = {
       iteration: iterations,
       startcoordinates: `(${globalSettings.xStart},${globalSettings.yStart})`,
       deltaFx: `(${deltaFx[0].toString()},${deltaFx[1].toString()})`,
@@ -44,14 +49,28 @@ function run() {
     console.log(frontendObject);
     createDOMTableRow(frontendObject);
     [globalSettings.xStart, globalSettings.yStart] = nextIterationCoordinates;
-    // console.log(globalSettings);
-    // console.log("------------------------");
-    console.log("Iterations performed: ", iterations + 1);
+    console.log("Iterations performed: ", iterations);
     console.log("one more iteration? ", flag);
     iterations++;
   }
   console.log("-------------------END-----------------");
-  //console.log(finalResult);
+
+  // #TODO Add a continue run button to frontend, to resume the cycle past the base 10 iteration if requested
+
+  const finalIterationsContainer = document.querySelector(".goal-iterations");
+  const finalFunctionContainer = document.querySelector(".function-value");
+  if (finalIterationsContainer.childNodes[2]) {
+    finalIterationsContainer.replaceChild(
+      document.createTextNode(frontendObject.iteration),
+      finalIterationsContainer.childNodes[2]
+    );
+  }
+  if (finalFunctionContainer.childNodes[2]) {
+    finalFunctionContainer.replaceChild(
+      document.createTextNode(frontendObject.functionValue),
+      finalFunctionContainer.childNodes[2]
+    );
+  }
 }
 
 function functionResult(expr) {
@@ -84,18 +103,20 @@ function finalExpressionBuilder(inputs) {
   globalSettings.xStart = inputs[5] ? nerdamer(inputs[5]).text() : "0";
   globalSettings.yStart = inputs[6] ? nerdamer(inputs[6]).text() : "0";
   globalSettings.eps = inputs[7] ? inputs[7] : "0.5";
+  // #TODO custom t*input acceptance
   globalSettings.t = inputs[8] ? inputs[8] : "0";
   console.log(globalSettings);
 
-  // #TODO work in custom input from inputs[0] here!!
-  //return finalExpressionConcatenated;
-  return "2*x*y + 2* y - x^2 - 2*y^2";
+  // perhaps a more elaborate check should be performed here, something like regexp for at least x, y and so on present, maybe some day
+  return inputs[0] === "1" ? finalExpressionConcatenated : inputs[0];
+  //return "2*x*y + 2* y - x^2 - 2*y^2";
 }
 
 function loopCheck(inputExpression, deltaFx) {
   const firstDerivative = nerdamer(`diff(${inputExpression}, x)`).toString();
   const secondDerivative = nerdamer(`diff(${inputExpression}, y)`).toString();
 
+  // #TODO check if all good, when going past maximum, doesnt find it the other way around? perhaps just how the algorithm works
   const loopLeftSides = [
     nerdamer(nerdamer(firstDerivative).toString(), {
       x: globalSettings.xStart,
@@ -106,17 +127,12 @@ function loopCheck(inputExpression, deltaFx) {
       y: globalSettings.yStart,
     }),
   ];
-  // console.log(
-  //   "loopcheck value 1= ",
-  //   loopLeftSides[0].text(),
-  //   "loopcheck value 2= ",
-  //   loopLeftSides[1].text()
-  // );
-  const lol = loopLeftSides.map((x) =>
+
+  const comparison = loopLeftSides.map((x) =>
     nerdamer(`${x.toString()}`).lte(`${globalSettings.eps}`)
   );
-  console.log(lol);
-  return lol;
+
+  return comparison;
 }
 
 function calculateDeltaFx(inputExpression) {
@@ -138,7 +154,6 @@ function calculateDeltaFx(inputExpression) {
 }
 
 function calculateTCoords(deltaFx) {
-  //console.log("deltaFx = ", deltaFx);
   const globalX = globalSettings.xStart.toString();
   const globalY = globalSettings.yStart.toString();
 
@@ -157,31 +172,21 @@ function calculateTCoords(deltaFx) {
       : `${globalY} + ${deltaFx[1].toString()} * t`
   );
 
-  //console.log("first coord", firstTvalue.toString());
-  //console.log("second coord", secondTvalue.toString());
-
   return [firstTvalue, secondTvalue];
 }
 
 function calculateTStar(coords, expression) {
-  //console.log("start expression = ", nerdamer(expression).toString());
-  //console.log(`Coords = (${coords[0]},${coords[1]})`);
-
   const simplifiedExpression = nerdamer(nerdamer(expression).toString(), {
     x: coords[0].toString(),
     y: coords[1].toString(),
   });
 
-  //console.log("Expression with t^2 = ", simplifiedExpression.toString());
-
   const firstDerivative = nerdamer(
     `diff(${simplifiedExpression}, t)`
   ).toString();
 
-  //console.log("derivative from t = ", firstDerivative.toString());
   const finalTstar = nerdamer.solveEquations(firstDerivative.toString(), "t");
 
-  //console.log("t* =", finalTstar.toString());
   return finalTstar.toString();
 }
 
@@ -195,8 +200,6 @@ function calculateNewCoordinates(tStar, deltaFx) {
   const secondNewCoordinate = nerdamer(
     `${globalY} + ${tStar} * ${deltaFx[1].toString()}`
   );
-  //console.log("new X coordinate = ", firstNewCoordinate.toString());
-  //console.log("new Y coordinate = ", secondNewCoordinate.toString());
 
   return [firstNewCoordinate.toString(), secondNewCoordinate.toString()];
 }
