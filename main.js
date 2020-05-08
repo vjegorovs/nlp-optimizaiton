@@ -15,7 +15,7 @@ function run() {
 
   let finalResult;
   let iterations = 0;
-  while (flag && iterations < 5) {
+  while (flag && iterations < 10) {
     const deltaFx = calculateDeltaFx(startExpression);
     console.log(
       "The deltaFx coords are = (",
@@ -39,7 +39,6 @@ function run() {
       deltaFx: `(${deltaFx[0].toString()},${deltaFx[1].toString()})`,
       tCoordinates: `(${newCoords[0].toString()},${newCoords[1].toString()})`,
       tStar: `${tStar}`,
-      newCoordinates: `(${nextIterationCoordinates[0]},${nextIterationCoordinates[1]})`,
       functionValue: `${functionResult(startExpression).text()}`,
     };
     console.log(frontendObject);
@@ -70,7 +69,7 @@ function expressionBuilder(inputArgs) {
     : baseExpression;
   const finalExpressionEnd = "f(x, y) = " + finalExpression;
   //console.log(finalExpressionEnd);
-  const expressionOutput = document.querySelector(".expression");
+  const expressionOutput = document.querySelector(".expre");
 
   // removes previous expr
   [...expressionOutput.childNodes].forEach((x) => x.parentNode.removeChild(x));
@@ -211,8 +210,7 @@ function createDOMTableRow(obj) {
   <div class="deltaFx"><p>${obj.deltaFx}</p></div> 
   <div class="t-coordinates"><p>${obj.tCoordinates}</p></div>
   <div class="t-star"><p>${obj.tStar}</p></div>
-  <div class="function-value"><p class="function-value-bold>${obj.functionValue}</p></div>
-  <div class="new-coordinates"><p>${obj.newCoordinates}</p></div>
+  <div class="function-value"><p class="bold_p">${obj.functionValue}</p></div>
   `;
   const tableRoot = document.querySelector(".table-rows");
   tableRoot.append(newElement);
@@ -229,7 +227,3 @@ console.log("----------------------");
 console.log("----------------------");
 console.log("----------------------");
 console.log("----------------------");
-// globalSettings.xStart = "-5";
-// globalSettings.yStart = "-5";
-
-// console.log(functionResult("x-2*y+10*x^2+-4*x*y+10*y^2").text());

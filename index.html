@@ -16,7 +16,7 @@
       <div class="title"><h1>NLP optimization</h1></div>
       <div class="main-wrap"></div>
       <div class="settings">
-        <ul>
+        <ul class="settings_list">
           <li>
             <label>Custom function:</label
             ><input type="text" placeholder="x − ay + bx^2 + cxy + dy^2" />
@@ -32,25 +32,43 @@
         </ul>
         <input type="submit" value="Try me!" class="submitBtn" />
       </div>
-      <div class="expression"></div>
+      <div class="expression">
+        <div class="start-expression">
+          <h3>Starting Expression:</h3>
+          <div class="expre"></div>
+        </div>
+        <div class="goal-iterations"><h3>Iterations performed:</h3></div>
+        <div class="function-value"><h3>Function Value:</h3></div>
+      </div>
       <div class="iteration-table">
         <div class="table-header">
           <div class="iteration-number">
             <h3>Iteration</h3>
           </div>
           <div class="start-coordinates">
-            <h3>Start Coordinates</h3>
+            <h3>Start Coords</h3>
           </div>
-          <div class="deltaFx"><h3>Delta Fx'</h3></div>
+          <div class="deltaFx"><h3>&nabla; f(x')</h3></div>
           <div class="t-coordinates">
-            <h3>t Coordinates</h3>
+            <h3>x' + t&nabla;f(x')</h3>
           </div>
           <div class="t-star">
             <h3>t*</h3>
           </div>
           <div class="function-value"><h3>Function value</h3></div>
         </div>
-        <ul class="table-rows"></ul>
+        <ul class="table-rows">
+          <!-- <li class="table-row">
+            <div class="iteration-number"><p>12</p></div>
+            <div class="start-coordinates"><p>1231231</p></div>
+            <div class="deltaFx"><p>1231</p></div>
+            <div class="t-coordinates"><p>123123</p></div>
+            <div class="t-star"><p>123123</p></div>
+            <div class="function-value">
+              12312
+            </div>
+          </li> -->
+        </ul>
       </div>
     </div>
   </body>

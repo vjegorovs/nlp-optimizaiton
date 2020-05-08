@@ -1,3 +1,10 @@
+@font-face {
+  font-family: "Lato";
+  src: url(/res/fonts/Lato-Regular.ttf);
+  font-family: "Lato-bold";
+  src: url(/res/fonts/Lato-Bold.ttf);
+}
+
 body {
   background-color: #fff;
   color: #000000;
@@ -10,6 +17,10 @@ body {
   padding: 0;
 }
 
+h3 {
+  margin: 0.5rem 0 1rem 0;
+}
+
 .grid-container {
   display: grid;
   width: 100%;
@@ -19,54 +30,65 @@ body {
       0.25fr
     );
   grid-template-rows:
-    minmax(10px, 0.05fr) minmax(50px, 0.45fr) minmax(50px, 0.8fr) repeat(
-      2,
-      minmax(40px, 2.25fr)
-    )
-    minmax(15px, 0.2fr);
+    minmax(50px, 0.45fr) minmax(100px, 1.1fr) minmax(40px, 2fr)
+    minmax(40px, 2.25fr) minmax(15px, 0.2fr);
   grid-column-gap: 0px;
-  grid-row-gap: 0px;
+  grid-row-gap: 10px;
 }
 
 .title {
-  grid-area: 2 / 2 / 3 / 4;
+  grid-area: 1 / 2 / 2 / 6;
   margin-left: 8%;
 }
 
 .main-wrap {
-  grid-area: 3 / 2 / 6 / 7;
+  grid-area: 2 / 2 / 5 / 7;
   /* border: solid rgb(131, 131, 131); */
   border-radius: 5rem;
   border-width: 5px;
 }
 
 .settings {
-  grid-area: 3 / 2 / 6 / 3;
+  grid-area: 2 / 2 / 5 / 3;
   width: 90%;
-  height: 90%;
-  border: 1px solid rgb(114, 133, 114);
+  height: fit-content;
+  border: 0.1px solid rgb(114, 133, 114);
   border-radius: 15px;
   margin: 15% 0 20% 10%;
   box-shadow: 2px 3px 15px -8px rgba(0, 0, 0, 0.89);
 }
 .expression {
-  grid-area: 3 / 3 / 4 / 7;
+  grid-area: 2 / 3 / 3 / 7;
   width: auto;
   height: auto;
-  border: 1px solid rgb(114, 133, 114);
+  border: 0.1px solid rgb(114, 133, 114);
   box-shadow: 2px 3px 15px -8px rgba(0, 0, 0, 0.89);
   border-radius: 15px;
   margin: 3.7% 5% 0 3%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  padding: 0 1rem;
+}
+
+.start-expression {
+  width: 40%;
+}
+
+.goal-iterations {
+  width: 35%;
 }
 
 .iteration-table {
-  grid-area: 4 / 3 / 6 / 7;
+  grid-area: 3 / 3 / 5 / 7;
   width: auto;
-  height: auto;
+  height: fit-content;
+  min-height: 94.5%;
   margin: 0.5% 5% 8% 3%;
-  border: 1px solid rgb(114, 133, 114);
+  border: 0.1px solid rgb(114, 133, 114);
   box-shadow: 2px 3px 15px -8px rgba(0, 0, 0, 0.89);
   border-radius: 15px;
+  overflow: hidden;
 }
 
 .grid {
@@ -83,40 +105,57 @@ ul {
   list-style: none;
 }
 
-li {
+.settings_list li {
   padding-top: 0.5em;
   margin-left: -5%;
   width: 100%;
-}
-
-.table-rows li {
-  list-style: none;
-  /* display: inline-block; */
-  flex: 0 1 100%;
-  margin-left: 5%;
-}
-
-.table-header {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  margin: 0 2% 2% 0;
-}
-
-.table-header div {
-  margin-left: 3%;
 }
 
 .table-rows {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
+
+  padding: 0;
+  list-style-type: none;
+}
+
+.table-rows li {
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  margin-right: 2%;
+}
+
+.table-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  margin-right: 2%;
+}
+
+.table-header div {
+  width: 16.67%;
+  text-align: center;
 }
 
 .table-rows li div,
 .table-header div,
 .table-header div h3 {
   display: inline-block;
+}
+
+.table-rows li div {
+  width: 16.67%;
+  text-align: center;
+}
+
+.table-rows li div:last-of-type {
+  text-align: start;
+}
+
+.table-rows li div p {
+  display: inline;
 }
 
 button,
@@ -154,15 +193,20 @@ li:first-child input {
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.26);
   cursor: pointer;
   width: 50%;
-  height: 10%;
+  height: 3rem;
   color: white;
   font-size: 100%;
   background-color: rgb(87, 87, 211);
-  margin-left: 25%;
+  margin: 0 0 5% 25%;
 }
 
 .submitBtn:hover {
   background-color: rgb(0, 0, 255);
   text-decoration: none;
   transition-duration: 0.5s;
+}
+
+.bold_p {
+  font-weight: bold;
+  font-size: 110%;
 }
