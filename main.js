@@ -1,4 +1,10 @@
-const globalSettings = { xStart: null, yStart: null, eps: null, t: null };
+const globalSettings = {
+  xStart: null,
+  yStart: null,
+  eps: null,
+  t: null,
+  tSet: false,
+};
 
 function run() {
   // getting all input settings from user
@@ -31,7 +37,11 @@ function run() {
     );
     const newCoords = calculateTCoords(deltaFx);
 
-    const tStar = calculateTStar(newCoords, startExpression);
+    // if t = 1 by default than calculate, else use the user input(if user wants 1, boohoo)
+    const tStar =
+      globalSettings.tSet !== true
+        ? calculateTStar(newCoords, startExpression)
+        : globalSettings.t;
 
     const nextIterationCoordinates = calculateNewCoordinates(tStar, deltaFx);
 
@@ -100,11 +110,19 @@ function expressionBuilder(inputArgs) {
 
 function finalExpressionBuilder(inputs) {
   let finalExpressionConcatenated = `x - ${inputs[1]}*y + ${inputs[2]}*x^2 + ${inputs[3]}*x*y + ${inputs[4]}*y^2`;
-  globalSettings.xStart = inputs[5] ? nerdamer(inputs[5]).text() : "0";
-  globalSettings.yStart = inputs[6] ? nerdamer(inputs[6]).text() : "0";
-  globalSettings.eps = inputs[7] ? inputs[7] : "0.5";
-  // #TODO custom t*input acceptance
-  globalSettings.t = inputs[8] ? inputs[8] : "0";
+  globalSettings.xStart = inputs[5] !== "1" ? nerdamer(inputs[5]).text() : "0";
+  globalSettings.yStart = inputs[6] !== "1" ? nerdamer(inputs[6]).text() : "0";
+  globalSettings.eps = inputs[7] !== "1" ? inputs[7] : "0.5";
+
+  console.log("x input =", inputs[5]);
+  console.log("x =", nerdamer(inputs[5]).text());
+  console.log("y =", nerdamer(inputs[6]).text());
+
+  globalSettings.t = inputs[8] !== "1" ? inputs[8] : "1";
+
+  // flag to use the same t all the way is its set by the user
+  if (globalSettings.t === inputs[8] && inputs[8] !== "1")
+    globalSettings.tSet = true;
   console.log(globalSettings);
 
   // perhaps a more elaborate check should be performed here, something like regexp for at least x, y and so on present, maybe some day
@@ -113,6 +131,7 @@ function finalExpressionBuilder(inputs) {
 }
 
 function loopCheck(inputExpression, deltaFx) {
+  // it is essentially the same as calculateDeltaFx, need to combine them into one #TODO
   const firstDerivative = nerdamer(`diff(${inputExpression}, x)`).toString();
   const secondDerivative = nerdamer(`diff(${inputExpression}, y)`).toString();
 
@@ -128,8 +147,9 @@ function loopCheck(inputExpression, deltaFx) {
     }),
   ];
 
+  console.log("loopcheck x/y = ", loopLeftSides.toString());
   const comparison = loopLeftSides.map((x) =>
-    nerdamer(`${x.toString()}`).lte(`${globalSettings.eps}`)
+    nerdamer(`abs(${x.toString()})`).lte(`${globalSettings.eps}`)
   );
 
   return comparison;
