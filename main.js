@@ -22,6 +22,7 @@ function run() {
   // check if previous runs present, clear table rows if yes
   if (globalSettings.xStart) {
     const tableRoot = document.querySelector(".table-rows");
+    globalSettings.tSet = false;
     [...tableRoot.children].forEach((x) => x.parentNode.removeChild(x));
   }
   // getting all input settings from user
