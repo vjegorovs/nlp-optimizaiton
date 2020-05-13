@@ -7,14 +7,31 @@ const globalSettings = {
 };
 
 function run() {
+  // check if more iterations button is present before a fresh run
+
+  const moreIterationsBtn = document.querySelector(".moreIterations");
+  const toggleCSSClasses = () => {
+    moreIterationsBtn.closest("li").classList.toggle("hidden_btn");
+    moreIterationsBtn.closest("li").classList.toggle("visible_btn");
+  };
+
+  if (moreIterationsBtn.closest("li").classList.contains("visible_btn")) {
+    toggleCSSClasses();
+  }
+
+  // check if previous runs present, clear table rows if yes
+  if (globalSettings.xStart) {
+    const tableRoot = document.querySelector(".table-rows");
+    [...tableRoot.children].forEach((x) => x.parentNode.removeChild(x));
+  }
   // getting all input settings from user
-  // second map to check for empty fields, if yes then just replacing with 0
+  // second map to check for empty fields, if yes then just replacing with 1
   let inputArray = [...document.querySelectorAll("input")]
     .map((x) => x.value)
     .slice(0, -1)
     .map((x) => (x === "" ? "1" : x));
 
-  // in case any default 0's inserted perhaps a popup to inform user?
+  // in case any default 1's inserted perhaps a popup to inform user?
 
   console.log(inputArray);
   const startExpression = expressionBuilder(inputArray);
@@ -25,8 +42,10 @@ function run() {
 
   let finalResult;
   let iterations = 1;
+  let iterationslimit = 10;
   let frontendObject = {};
-  while (flag && iterations <= 10) {
+
+  const iterationRun = () => {
     const deltaFx = calculateDeltaFx(startExpression);
     console.log(
       "The deltaFx coords are = (",
@@ -37,7 +56,7 @@ function run() {
     );
     const newCoords = calculateTCoords(deltaFx);
 
-    // if t = 1 by default than calculate, else use the user input(if user wants 1, boohoo)
+    // if t = 1 by default than calculate, else use the user input(if user wants 1, boohoo, 1 will not change the coordinates)
     const tStar =
       globalSettings.tSet !== true
         ? calculateTStar(newCoords, startExpression)
@@ -62,25 +81,41 @@ function run() {
     console.log("Iterations performed: ", iterations);
     console.log("one more iteration? ", flag);
     iterations++;
+    const finalIterationsContainer = document.querySelector(".goal-iterations");
+    const finalFunctionContainer = document.querySelector(".function-value");
+    if (finalIterationsContainer.childNodes[2]) {
+      finalIterationsContainer.replaceChild(
+        document.createTextNode(frontendObject.iteration),
+        finalIterationsContainer.childNodes[2]
+      );
+    }
+    if (finalFunctionContainer.childNodes[2]) {
+      finalFunctionContainer.replaceChild(
+        document.createTextNode(frontendObject.functionValue),
+        finalFunctionContainer.childNodes[2]
+      );
+    }
+  };
+  while (flag && iterations <= iterationslimit) {
+    iterationRun();
   }
+
+  if (flag) {
+    // add button to dom, bind function
+
+    function tenMoreiterations() {
+      iterationslimit += 10;
+      while (flag && iterations <= iterationslimit) {
+        iterationRun();
+      }
+      if (!flag) toggleCSSClasses();
+    }
+
+    moreIterationsBtn.addEventListener("click", tenMoreiterations);
+    toggleCSSClasses();
+  }
+
   console.log("-------------------END-----------------");
-
-  // #TODO Add a continue run button to frontend, to resume the cycle past the base 10 iteration if requested
-
-  const finalIterationsContainer = document.querySelector(".goal-iterations");
-  const finalFunctionContainer = document.querySelector(".function-value");
-  if (finalIterationsContainer.childNodes[2]) {
-    finalIterationsContainer.replaceChild(
-      document.createTextNode(frontendObject.iteration),
-      finalIterationsContainer.childNodes[2]
-    );
-  }
-  if (finalFunctionContainer.childNodes[2]) {
-    finalFunctionContainer.replaceChild(
-      document.createTextNode(frontendObject.functionValue),
-      finalFunctionContainer.childNodes[2]
-    );
-  }
 }
 
 function functionResult(expr) {
@@ -135,7 +170,6 @@ function loopCheck(inputExpression, deltaFx) {
   const firstDerivative = nerdamer(`diff(${inputExpression}, x)`).toString();
   const secondDerivative = nerdamer(`diff(${inputExpression}, y)`).toString();
 
-  // #TODO check if all good, when going past maximum, doesnt find it the other way around? perhaps just how the algorithm works
   const loopLeftSides = [
     nerdamer(nerdamer(firstDerivative).toString(), {
       x: globalSettings.xStart,

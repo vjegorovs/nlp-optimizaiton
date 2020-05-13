@@ -186,13 +186,14 @@ li:first-child label {
   margin-left: -5%;
 }
 
-li:first-child input {
+li:nth-child(2) input {
   width: 100%;
   margin: 5% 5% 5% -5%;
   font-size: 65%;
 }
 
-.submitBtn {
+.submitBtn,
+.visible_btn button {
   outline: none;
   display: inline-block;
   border: 1px solid #dddddd;
@@ -207,7 +208,8 @@ li:first-child input {
   margin: 0 0 5% 25%;
 }
 
-.submitBtn:hover {
+.submitBtn:hover,
+.visible_btn button:hover {
   background-color: rgb(0, 0, 255);
   text-decoration: none;
   transition-duration: 0.5s;
@@ -216,4 +218,15 @@ li:first-child input {
 .bold_p {
   font-weight: bold;
   font-size: 110%;
+}
+
+.hidden_btn {
+  display: none;
+}
+
+.visible_btn {
+  display: list-item;
+  padding-top: 0.5em;
+  margin-left: -5%;
+  width: 100%;
 }
