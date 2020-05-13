@@ -9,7 +9,7 @@ const globalSettings = {
 function run() {
   // check if more iterations button is present before a fresh run
 
-  const moreIterationsBtn = document.querySelector(".moreIterations");
+  let moreIterationsBtn = document.querySelector(".moreIterations");
   const toggleCSSClasses = () => {
     moreIterationsBtn.closest("li").classList.toggle("hidden_btn");
     moreIterationsBtn.closest("li").classList.toggle("visible_btn");
@@ -112,7 +112,10 @@ function run() {
       if (!flag) toggleCSSClasses();
     }
 
+    moreIterationsBtn.replaceWith(moreIterationsBtn.cloneNode(true));
+    moreIterationsBtn = document.querySelector(".moreIterations");
     moreIterationsBtn.addEventListener("click", tenMoreiterations);
+
     toggleCSSClasses();
   }
 
