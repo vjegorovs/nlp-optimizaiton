@@ -1,3 +1,13 @@
+/*
+A list of potential nice to haves, todos, ideas:
+- quick introduction on first visit, with a button in top left to open it again, show only on new visit, track via localstorage?
+- add 100 more iterations button as well. Or 50, depends.
+- Partially connected to the above point, create a rest api backend for the calculations, will allow to easily crank out
+calculations way past 10 at a time. Currently any done past +/- 300 iteratinos load quite slowly since its client dependant
+- Add media queries for mobile and fully fledged responsiveness
+- what is lp, what this tool achieves, similar to intro, but somewhere clickable I guess
+*/
+
 const globalSettings = {
   xStart: null,
   yStart: null,
